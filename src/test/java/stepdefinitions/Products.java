@@ -15,7 +15,8 @@ import io.restassured.specification.RequestSpecification;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.testng.Assert.assertEquals;
 
 public class Products {
 
@@ -38,9 +39,9 @@ public class Products {
         System.out.println(" String entered = "+string);
     }
     @Then("the response status code should be {int}")
-    public void the_response_status_code_should_be(Integer int1) {
+    public void the_response_status_code_should_be(Integer expectedResponseCode) {
         responseCode = response.getStatusCode();
-        assertEquals(200, responseCode);
+       assertEquals(responseCode, expectedResponseCode);
         System.out.println("Response code = "+responseCode);
     }
 
