@@ -1,5 +1,7 @@
 package stepdefinitions;
 
+
+import io.cucumber.cienvironment.internal.com.eclipsesource.json.JsonObject;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -9,6 +11,9 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,13 +28,12 @@ public class Products {
     public void the_base_api_url() {
 
         RestAssured.baseURI="https://fakestoreapi.com/";
-      httprequest = RestAssured.given();
-       response = httprequest.get("products");
 
-
-    }
+     }
     @When("I send a GET request to {string}")
     public void i_send_a_get_request_to(String string) {
+
+        httprequest = RestAssured.given();
         response = httprequest.get("products");
         System.out.println(" String entered = "+string);
     }
@@ -51,11 +55,58 @@ public class Products {
 
 
     @When("I send a POST request to {string}")
-    public void iSendAPOSTRequestTo(String arg0) {
-        
+    public void iSendAPOSTRequestTo(String productTitle) {
+
     }
 
     @And("I pass the request body of product title {string}")
-    public void iPassTheRequestBodyOfProductTitle(String arg0) {
+    public void iPassTheRequestBodyOfProductTitle(String productTitle) {
+        httprequest = RestAssured.given();
+        // Serialization -> Jackson Lib will convert this java object into JSON
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("title", productTitle);
+        requestBody.put("price", 13.5); // Use the correct data type (Double or Float)
+        requestBody.put("description", "lorem ipsum set");
+        requestBody.put("image", "https://i.pravatar.cc");
+        requestBody.put("category", "electronic");
+
+        httprequest.body(requestBody);
+
+        response = httprequest.post("products");
+//        Deserialization
+        System.out.println("Response Body:" + response.getBody().asPrettyString());
+
+//        System.out.println("ID of new product = "+response.jsonPath().getString("id"));
+//        System.out.println(" response after adding code = "+response.getStatusCode());
+
+    }
+
+
+    @When("I send a PUT request to {int}")
+    public void iSendAPUTRequestToProductID(int id) {
+        httprequest = RestAssured.given();
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("title", "Macbook");
+        requestBody.put("price", 13.5); // Use the correct data type (Double or Float)
+        requestBody.put("description", "lorem ipsum set");
+        requestBody.put("image", "https://i.pravatar.cc");
+        requestBody.put("category", "electronic");
+
+        httprequest.body(requestBody);
+
+        response = httprequest.put("products/"+id);
+//        System.out.println("Response Body:" + response.getBody().asPrettyString());
+//        System.out.println(" response after adding code = "+response.getStatusCode());
+
+
+    }
+
+    @When("I send a DELETE request to {int}")
+    public void i_send_a_delete_request_to(int id) {
+          httprequest = RestAssured.given();
+          response = httprequest.delete("products/"+id);
+//        System.out.println("Response Body:" + response.getBody().asPrettyString());
+//        System.out.println(" response after adding code = "+response.getStatusCode());
+
     }
 }
